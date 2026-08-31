@@ -252,9 +252,8 @@ onBeforeUnmount(() => {
       flex-shrink: 1;
       flex-basis: auto;
       transform-origin: center;
-      //transition: all 0.5s cubic-bezier(0.38, 1.21, 0.22, 1);
       &.noDarg {
-        transition: all 0.5s cubic-bezier(0.38, 1.21, 0.22, 1);
+        transition: all 0.35s cubic-bezier(0.42, 1.67, 0.21, 0.9);
       }
       &.input {
         justify-content: start;
@@ -310,7 +309,7 @@ onBeforeUnmount(() => {
 .fade-move,
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.5s cubic-bezier(0.38, 1.21, 0.22, 1);
+  transition: all 0.35s cubic-bezier(0.42, 1.67, 0.21, 0.9);
 }
 
 /** 进入动画 */

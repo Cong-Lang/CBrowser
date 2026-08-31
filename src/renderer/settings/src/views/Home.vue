@@ -4,7 +4,7 @@ document.title = '设置 - 关于CBrowser'
 
 <template>
   <m3e-content-pane id="home">
-    <m3e-heading variant="display" size="small">您与 Google</m3e-heading>
+    <m3e-heading variant="display" size="small">个人</m3e-heading>
     <m3e-action-list variant="segmented" class="action-list">
       <m3e-list-item></m3e-list-item>
     </m3e-action-list>

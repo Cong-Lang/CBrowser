@@ -9,7 +9,7 @@ const routes: RouteRecordRaw[] = [
     component: HomeView,
     meta: {
       icon: 'home',
-      name: '您与 Google'
+      name: '个人'
     }
   }
 ]
