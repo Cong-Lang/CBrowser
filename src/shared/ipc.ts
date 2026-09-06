@@ -40,12 +40,19 @@ export const MenuChannel = {
   Result: 'menu:result'
 } as const
 
-export const downloadChannel = {
+export const DownloadChannel = {
   /** 主进程把下载数据提供给渲染进程 */
   Data: 'download:data'
 }
 
 export const WindowChannel = {
   /** 更新webview位置 */
-  updateSize: 'window:update'
+  UpdateSize: 'window:update'
+}
+
+export const HistoryChannel = {
+  /** 获取历史记录 */
+  GetHistorise: 'history:get',
+  /** 主进程推送完整历史记录快照 */
+  State: 'history:state'
 }

@@ -5,7 +5,13 @@ import { ElectronChromeExtensions } from 'electron-chrome-extensions'
 import type { TabsState } from '../shared/types/tabs'
 import type { ExtensionsState } from '../shared/types/extensions'
 import type { MenuRequest } from '../shared/types/menu'
-import { ExtensionsChannel, MenuChannel, TabsChannel, WindowChannel } from '../shared/ipc'
+import {
+  ExtensionsChannel,
+  HistoryChannel,
+  MenuChannel,
+  TabsChannel,
+  WindowChannel
+} from '../shared/ipc'
 import { privilegedSchemes, registerCbProtocol } from './protocol'
 import { createWindow, getMainWindow, changeWebviewSize } from './window'
 import {
@@ -24,6 +30,7 @@ import {
 } from './tabs'
 import { abandonMenuFor, closeMenu, initMenu, openMenu } from './menu'
 import { getExtensionsSnapshot, initExtensionsState } from './extensions'
+import { getHistorise } from './history'
 
 // import { googleOAuth } from './oauth'
 
@@ -155,7 +162,7 @@ ipcMain.on(MenuChannel.Dismiss, (_event, requestId: unknown) => {
   if (typeof requestId === 'string') closeMenu(requestId, null)
 })
 
-ipcMain.on(WindowChannel.updateSize, (_event, size: unknown) => {
+ipcMain.on(WindowChannel.UpdateSize, (_event, size: unknown) => {
   if (typeof size === 'object') {
     if (size && 'x' in size && 'y' in size && 'width' in size && 'height' in size) {
       const s = size as Record<string, unknown>
@@ -174,6 +181,14 @@ ipcMain.on(WindowChannel.updateSize, (_event, size: unknown) => {
       }
     }
   }
+})
+
+// 历史记录IPC
+ipcMain.handle(HistoryChannel.GetHistorise, (_event, offset: unknown, conut: unknown) => {
+  if (typeof offset != 'number' || typeof conut != 'number') {
+    return []
+  }
+  return getHistorise(offset, conut)
 })
 
 app.on('web-contents-created', (_event, contents) => {

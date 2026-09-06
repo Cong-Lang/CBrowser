@@ -25,6 +25,7 @@ const currentRouter = computed(() => router.currentRoute.value)
                 v-for="(value, index) in router.getRoutes()"
                 :key="index"
                 :selected="currentRouter.name === value.name"
+                @click="router.push(value.path)"
               >
                 <m3e-icon
                   slot="icon"

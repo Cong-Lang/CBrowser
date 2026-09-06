@@ -11,6 +11,7 @@ import {
 } from './window'
 import { TabsChannel } from '../shared/ipc'
 import { newDownload } from './download'
+import { setLink, updateLinkData } from './history'
 
 const DEFAULT_URL = 'https://www.bing.com'
 
@@ -268,6 +269,9 @@ function attachTabEvents(record: TabRecord, window: BrowserWindow): void {
     event.preventDefault()
     if (!alive() || record.title === title) return
     record.title = title
+    // 更新历史记录标题
+    updateLinkData(record.url, record.title)
+
     publishTabs()
   })
 
@@ -279,9 +283,10 @@ function attachTabEvents(record: TabRecord, window: BrowserWindow): void {
     publishTabs()
   })
 
-  // 只关心主框架的地址变化;子框架(广告 iframe 等)不改写地址栏
+  // 只关心主框架的地址变化
   const syncUrl = (url: string, isMainFrame: boolean): void => {
-    if (!alive() || !isMainFrame || record.url === url) return
+    if (!isMainFrame || !alive()) return
+    record.icon = ''
     record.crash = false
     record.url = url
     publishTabs()
@@ -291,6 +296,9 @@ function attachTabEvents(record: TabRecord, window: BrowserWindow): void {
     syncUrl(details.url, details.isMainFrame)
   })
   contents.on('did-navigate', (_event, url) => {
+    // 历史记录添加
+    setLink(record.url, record.title)
+
     syncUrl(url, true)
   })
   contents.on('did-navigate-in-page', (_event, url, isMainFrame) => {
@@ -304,8 +312,8 @@ function attachTabEvents(record: TabRecord, window: BrowserWindow): void {
     if (!alive()) return
     record.crash = false
     const loading = contents.isLoading()
-    if (record.loading === loading) return
     record.loading = loading
+
     publishTabs()
   }
 
@@ -325,6 +333,7 @@ function attachTabEvents(record: TabRecord, window: BrowserWindow): void {
     if (record.destroyed) return
     record.crash = true
     record.loading = false
+
     publishTabs()
   })
 

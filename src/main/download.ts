@@ -1,6 +1,6 @@
 import { type DownloadItem as DownloadInstance } from 'electron'
 import { getShellWebContents } from './window'
-import { downloadChannel } from '../shared/ipc'
+import { DownloadChannel } from '../shared/ipc'
 import { DownloadState, DownloadItem } from '../shared/types/download'
 
 interface DownloadRecord {
@@ -82,6 +82,6 @@ export function scheduleBroadcast(): void {
     revision += 1
     const contents = getShellWebContents()
     if (!contents) return
-    contents.send(downloadChannel.Data, getDownloadSnapshot())
+    contents.send(DownloadChannel.Data, getDownloadSnapshot())
   })
 }

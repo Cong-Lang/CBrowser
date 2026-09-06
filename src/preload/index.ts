@@ -4,8 +4,9 @@ import 'electron-chrome-extensions/preload'
 import 'electron-chrome-web-store/preload'
 import { injectBrowserAction } from 'electron-chrome-extensions/browser-action'
 import {
-  downloadChannel,
+  DownloadChannel,
   ExtensionsChannel,
+  HistoryChannel,
   MenuChannel,
   TabsChannel,
   WindowChannel
@@ -16,6 +17,7 @@ import type { Menu, MenuResult } from '../shared/types/menu'
 import type { CbApi, MenuShowPayload } from '../shared/types/api'
 import { DownloadState } from '../shared/types/download'
 import { WebviewSize } from '../shared/types/window'
+import { History, HistoryState } from '../shared/types/history'
 
 /**
  * 暴露给渲染进程的受限API
@@ -94,16 +96,30 @@ const api: CbApi = {
     /** 下载数据更新事件 */
     onState(listener: (state: DownloadState) => void): () => void {
       const handler = (_event: unknown, state: DownloadState): void => listener(state)
-      ipcRenderer.on(downloadChannel.Data, handler)
+      ipcRenderer.on(DownloadChannel.Data, handler)
       return () => {
-        ipcRenderer.removeListener(downloadChannel.Data, handler)
+        ipcRenderer.removeListener(DownloadChannel.Data, handler)
       }
     }
   },
   window: {
-    /** 更新webview大小 */
+    /** 更新webview位置 */
     updateSize(size: WebviewSize): void {
-      ipcRenderer.send(WindowChannel.updateSize, size)
+      ipcRenderer.send(WindowChannel.UpdateSize, size)
+    }
+  },
+  history: {
+    /** 获取历史记录 */
+    getHistorise(offset: number, conut: number): Promise<[string, History][]> {
+      return ipcRenderer.invoke(HistoryChannel.GetHistorise, offset, conut)
+    },
+    /** 更新历史记录事件 */
+    onState(listener: (state: HistoryState) => void): () => void {
+      const handler = (_event: unknown, state: HistoryState): void => listener(state)
+      ipcRenderer.on(HistoryChannel.State, handler)
+      return () => {
+        ipcRenderer.removeListener(HistoryChannel.State, handler)
+      }
     }
   },
   /** 仅菜单窗口使用 */

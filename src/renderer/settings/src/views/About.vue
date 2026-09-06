@@ -5,7 +5,7 @@ document.title = '设置 - 关于CBrowser'
 </script>
 
 <template>
-  <m3e-content-pane id="home">
+  <m3e-content-pane id="about">
     <m3e-heading variant="display" size="small">关于 {{ browserInfo.name }}</m3e-heading>
     <m3e-action-list variant="segmented" class="action-list">
       <m3e-list-item>版本 {{ browserInfo.version }}</m3e-list-item>
@@ -23,7 +23,7 @@ document.title = '设置 - 关于CBrowser'
 </template>
 
 <style lang="scss" scoped>
-#home {
+#about {
   height: 100%;
   --m3e-content-pane-container-color: var(--md-sys-color-surface-container-lowest);
   .action-list {

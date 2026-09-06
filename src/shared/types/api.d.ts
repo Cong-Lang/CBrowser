@@ -3,6 +3,7 @@ import type { ExtensionsState } from './extensions'
 import type { Menu } from './menu'
 import { DownloadState } from './download'
 import { WebviewSize } from './window'
+import { History } from './history'
 
 /**
  * `window.cb` 的契约
@@ -52,11 +53,17 @@ export interface CbWindowApi {
   updateSize(size: WebviewSize): void
 }
 
+export interface CbHistoryApi {
+  getHistorise(offset: number, conut: number): Promise<[string, History][]>
+  onState(listener: (state: HistoryState) => void): () => void
+}
+
 export interface CbApi {
   tabs: CbTabsApi
   extensions: CbExtensionsApi
   contextMenu: CbContextMenuApi
   download: CbDownloadApi
   window: CbWindowApi
+  history: CbHistoryApi
   menuHost: CbMenuHostApi
 }

@@ -26,6 +26,7 @@
     "@elysia/node": "^1.4.6",
     "@m3e/web": "^2.7.7",
     "@sinclair/typebox": "^0.34.52",
+    "@vfx-js/core": "^1.1.0",
     "@vueuse/core": "^14.4.0",
     "crypto": "^1.0.1",
     "electron-chrome-context-menu": "^1.1.0",
@@ -37,6 +38,7 @@
     "google-auth-library": "^11.0.2",
     "googleapis": "^176.0.0",
     "openapi-types": "^12.1.3",
+    "pinia": "^4.0.3",
     "vue-draggable-plus": "^0.6.1",
     "vue-router": "^5.2.0"
   },
