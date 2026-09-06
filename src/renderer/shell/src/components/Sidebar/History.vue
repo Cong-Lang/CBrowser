@@ -58,8 +58,11 @@ const openUrl = (url: string): void => {
   window.cb.tabs.create(url)
 }
 
-const reloadIsScrollDown = (): void => {
+const reloadIsScrollDown = async (): Promise<void> => {
   isScrollDown.value = !isIntersecting.value && haveNewHistorise.value
+  if (isIntersecting.value && haveNewHistorise.value) {
+    await reloadHistorise()
+  }
 }
 
 const reloadHistorise = async (): Promise<void> => {
