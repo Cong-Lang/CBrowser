@@ -5,12 +5,23 @@ import { pathToFileURL } from 'node:url'
 import { is } from '@electron-toolkit/utils'
 
 export const CB_SCHEME = 'cb-chrome'
+export const ICON_SCHEME = 'cb-icon'
 
 export const privilegedSchemes = [
   {
     scheme: CB_SCHEME,
     privileges: {
       standard: true,
+      secure: true,
+      supportFetchAPI: true,
+      corsEnabled: true,
+      bypassCSP: true
+    }
+  },
+  {
+    scheme: ICON_SCHEME,
+    privileges: {
+      standard: false,
       secure: true,
       supportFetchAPI: true,
       corsEnabled: true,
@@ -80,6 +91,12 @@ export function registerCbProtocol(): void {
     const resolved = candidates.find((candidate) => existsSync(candidate)) ?? candidates[0]
 
     return serveFile(resolved)
+  })
+  protocol.handle(ICON_SCHEME, async (request: Request): Promise<Response> => {
+    const url = new URL(request.url)
+    const noProto = decodeURIComponent(url.href.slice(url.protocol.length))
+    const req = await net.fetch(noProto)
+    return req
   })
 }
 

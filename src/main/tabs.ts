@@ -279,7 +279,8 @@ function attachTabEvents(record: TabRecord, window: BrowserWindow): void {
     event.preventDefault()
     const icon = favicons[0] ?? ''
     if (!alive() || record.icon === icon) return
-    record.icon = icon
+    record.icon = `cb-icon:${encodeURIComponent(icon)}`
+    console.log(record.icon)
     publishTabs()
   })
 
