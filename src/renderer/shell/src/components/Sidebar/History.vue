@@ -5,9 +5,14 @@ import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 const emit = defineEmits<{ goPage: [name: string]; goTop: [] }>()
 const historise = ref<[string, History][]>([])
 const autoReloadRef = useTemplateRef('autoReload')
+const autoLoadRef = useTemplateRef('autoLoad')
 const isScrollDown = ref(false)
 const isIntersecting = ref(false)
 const haveNewHistorise = ref(false)
+const ishavaOld = ref(true)
+const historiesOffset = ref(0)
+const initHistorise = ref(false)
+const historiesCount = 200
 const stopListening = window.cb.history.onState((state: HistoryState) => {
   if (JSON.stringify(state) !== JSON.stringify(historise.value)) {
     haveNewHistorise.value = true
@@ -17,7 +22,7 @@ const stopListening = window.cb.history.onState((state: HistoryState) => {
 })
 
 onMounted(async () => {
-  reloadHistorise()
+  await reloadHistorise()
   console.log(historise.value)
 
   if (!autoReloadRef.value) return
@@ -28,6 +33,17 @@ onMounted(async () => {
     })
   })
   autoReloadObserver.observe(autoReloadRef.value)
+
+  if (!autoLoadRef.value) return
+  const autoLoadObserver = new IntersectionObserver(async (entries) => {
+    entries.forEach(async (entry) => {
+      if (entry.isIntersecting) {
+        console.log(111)
+        await loadHistorise()
+      }
+    })
+  })
+  autoLoadObserver.observe(autoLoadRef.value)
 })
 
 onUnmounted(() => {
@@ -47,13 +63,36 @@ const reloadIsScrollDown = (): void => {
 }
 
 const reloadHistorise = async (): Promise<void> => {
-  historise.value = await window.cb.history.getHistorise(0, 200)
+  // 刷新操作
+  historiesOffset.value = 0
+
+  const newHistorise = await window.cb.history.getHistorise(historiesOffset.value, historiesCount)
+  historise.value = newHistorise
+  historiesOffset.value += newHistorise.length
   haveNewHistorise.value = false
+  ishavaOld.value = true
+  initHistorise.value = true
+  console.log(historiesOffset.value)
+}
+
+const loadHistorise = async (): Promise<void> => {
+  // 增加操作
+  if (!ishavaOld.value || !initHistorise.value) return
+
+  const oldHistorise = await window.cb.history.getHistorise(historiesOffset.value, historiesCount)
+  historise.value = [...historise.value, ...oldHistorise]
+  if (oldHistorise.length <= 0) {
+    ishavaOld.value = false
+  }
+  historiesOffset.value += oldHistorise.length
+  console.log(historiesOffset.value)
 }
 
 const clickNewHistorise = async (): Promise<void> => {
   scrollToStart()
+
   await reloadHistorise()
+
   reloadIsScrollDown()
 }
 </script>
@@ -70,7 +109,7 @@ const clickNewHistorise = async (): Promise<void> => {
     </Transition>
     <m3e-action-list variant="segmented" class="action-list">
       <m3e-list-action
-        v-for="history in [...historise].reverse()"
+        v-for="history in historise"
         :key="history[0]"
         class="action"
         @click="openUrl(history[0])"
@@ -79,6 +118,7 @@ const clickNewHistorise = async (): Promise<void> => {
         <span slot="supporting-text" class="action-text">{{ history[0] }}</span>
       </m3e-list-action>
     </m3e-action-list>
+    <div ref="autoLoad" class="auto-load"></div>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -96,6 +136,10 @@ const clickNewHistorise = async (): Promise<void> => {
     align-items: center;
   }
   .auto-reload {
+    height: 0px;
+    width: 100%;
+  }
+  .auto-load {
     height: 0px;
     width: 100%;
   }

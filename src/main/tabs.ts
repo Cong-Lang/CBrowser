@@ -240,6 +240,7 @@ export function createTab(url?: string, activate = true): TabRecord | null {
   )
 
   attachTabEvents(record, window)
+  // generateTestHistory()
 
   if (activate) {
     applyActive(record.id)
@@ -296,12 +297,14 @@ function attachTabEvents(record: TabRecord, window: BrowserWindow): void {
   contents.on('did-start-navigation', (details) => {
     syncUrl(details.url, details.isMainFrame)
   })
+
   contents.on('did-navigate', (_event, url) => {
     // 历史记录添加
     setLink(record.url, record.title)
 
     syncUrl(url, true)
   })
+
   contents.on('did-navigate-in-page', (_event, url, isMainFrame) => {
     syncUrl(url, isMainFrame)
   })
