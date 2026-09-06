@@ -15,6 +15,7 @@ const initHistorise = ref(false)
 const historiesCount = 200
 const stopListening = window.cb.history.onState((state: HistoryState) => {
   if (JSON.stringify(state) !== JSON.stringify(historise.value)) {
+    // 如果新历史记录和原来不同则刷新状态
     haveNewHistorise.value = true
     reloadIsScrollDown()
     console.log(state, historise.value)
@@ -38,7 +39,6 @@ onMounted(async () => {
   const autoLoadObserver = new IntersectionObserver(async (entries) => {
     entries.forEach(async (entry) => {
       if (entry.isIntersecting) {
-        console.log(111)
         await loadHistorise()
       }
     })
@@ -93,10 +93,6 @@ const loadHistorise = async (): Promise<void> => {
 
 const clickNewHistorise = async (): Promise<void> => {
   scrollToStart()
-
-  await reloadHistorise()
-
-  reloadIsScrollDown()
 }
 </script>
 <template>
