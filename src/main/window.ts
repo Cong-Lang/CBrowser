@@ -40,6 +40,7 @@ export function createWindow(): BrowserWindow {
     minWidth: 600,
     show: false,
     autoHideMenuBar: true,
+    title: 'CBrowser',
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.mjs'),
