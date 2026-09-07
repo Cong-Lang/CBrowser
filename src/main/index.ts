@@ -30,7 +30,7 @@ import {
 } from './tabs'
 import { abandonMenuFor, closeMenu, initMenu, openMenu } from './menu'
 import { getExtensionsSnapshot, initExtensionsState } from './extensions'
-import { getHistorise } from './history'
+import { getHistorise, readHistory } from './history'
 
 // import { googleOAuth } from './oauth'
 
@@ -77,6 +77,7 @@ app.whenReady().then(async () => {
     }
   })
 
+  readHistory()
   initTabs(extensions)
   await installChromeWebStore({ session: session.defaultSession })
   initExtensionsState()

@@ -32,7 +32,7 @@ export async function initMenu(): Promise<void> {
 
   const view = new WebContentsView({
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
+      preload: join(__dirname, '../preload/index.mjs'),
       sandbox: false,
       transparent: true
     }

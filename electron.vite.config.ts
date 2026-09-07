@@ -5,8 +5,24 @@ import vue from '@vitejs/plugin-vue'
 const prefixes = ['m3e-', 'webview']
 
 export default defineConfig({
-  main: {},
-  preload: {},
+  main: {
+    build: {
+      rollupOptions: {
+        output: {
+          format: 'es'
+        }
+      }
+    }
+  },
+  preload: {
+    build: {
+      rollupOptions: {
+        output: {
+          format: 'es'
+        }
+      }
+    }
+  },
   renderer: {
     resolve: {
       alias: {

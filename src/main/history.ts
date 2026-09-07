@@ -1,8 +1,9 @@
 import { HistoryChannel } from '../shared/ipc'
 import type { History } from '../shared/types/history'
+import { getStore, setStore } from './store'
 import { getShellWebContents } from './window'
 
-const histories = new Map<string, History>()
+let histories = new Map<string, History>()
 let broadcastScheduled = false
 
 export function setLink(link: string, title: string): void {
@@ -13,6 +14,7 @@ export function setLink(link: string, title: string): void {
     title: title
   })
   scheduleBroadcast()
+  saveHistory()
 }
 
 export function updateLinkData(link: string, title: string): void {
@@ -22,6 +24,7 @@ export function updateLinkData(link: string, title: string): void {
     title: title
   })
   scheduleBroadcast()
+  saveHistory()
 }
 
 export function getHistorise(offset?: number, count?: number): [string, History][] {
@@ -50,4 +53,27 @@ function scheduleBroadcast(): void {
   if (!contents) return
   contents.send(HistoryChannel.State, getHistorise(0, 200))
   broadcastScheduled = false
+}
+
+export function saveHistory(): void {
+  setStore('history', Array.from(histories.entries()))
+}
+
+export function readHistory(): void {
+  const localHistory = getStore('history')
+  if (isHistoryArray(localHistory)) {
+    histories = new Map(localHistory)
+  }
+}
+
+function isHistoryArray(value: unknown): value is [string, History][] {
+  if (!Array.isArray(value)) return false
+  return value.every(
+    (item) =>
+      Array.isArray(item) &&
+      item.length === 2 &&
+      typeof item[0] === 'string' &&
+      typeof item[1] === 'object' &&
+      item[1] !== null
+  )
 }
