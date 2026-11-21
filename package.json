@@ -1,11 +1,13 @@
 {
   "name": "CBrowser",
-  "version": "1.0.0",
-  "description": "An Electron application with Vue and TypeScript",
+  "version": "1.0.1",
+  "description": "CBrowser",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
   "type": "module",
+  "author": {
+    "name": "hhcl233",
+    "email": "m18713932098@163.com"
+  },
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",

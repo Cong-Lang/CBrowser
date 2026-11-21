@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: com.cbrowser.app
 productName: CBrowser
 directories:
   buildResources: build
@@ -12,6 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
+  icon: icon.png
   executableName: CBrowser
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
@@ -19,6 +20,7 @@ nsis:
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
 mac:
+  icon: icon.png
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.
@@ -29,11 +31,10 @@ mac:
 dmg:
   artifactName: ${name}-${version}.${ext}
 linux:
+  icon: icon.png
   target:
     - AppImage
-    - snap
     - deb
-  maintainer: electronjs.org
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
